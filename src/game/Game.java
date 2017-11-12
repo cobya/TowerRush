@@ -130,7 +130,9 @@ public class Game implements runnable{
 			}
 			
 			for(Enemy temp: enemies) {
-				temp.moveForward();
+				if(!temp.isAtEnd()) {
+					temp.moveForward();
+				}
 			}
 			
 			for(Fighter tempF: fighters) {
