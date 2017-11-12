@@ -3,19 +3,38 @@ package logic;
 import java.awt.Image;
 
 public class Enemy {
-	private int speed;
+	public enum EnemyClass {
+		SPEED, STRENGTH, HEALTH  //Denotes dominant attribute; will rename
+	}
+	
+	private int travelSpeed;
+	private int attackSpeed;
 	private int health;
 	private int maxHealth;
 	private int attackDamage;
+	private Path path;
 	private int[][] position;
+	private double step;
 	private int cost;
+	private boolean alive, atEnd, attackReady;
 	private Image sprite;
 	
-	public int getSpeed() {
-		return speed;
+	
+	Enemy() {
+		
 	}
-	public void setSpeed(int speed) {
-		this.speed = speed;
+
+	public int getTravelSpeed() {
+		return travelSpeed;
+	}
+	public void setTravelSpeed(int travelSpeed) {
+		this.travelSpeed = travelSpeed;
+	}
+	public int getAttackSpeed() {
+		return attackSpeed;
+	}
+	public void setAttackSpeed(int attackSpeed) {
+		this.attackSpeed = attackSpeed;
 	}
 	public int getHealth() {
 		return health;
@@ -35,11 +54,23 @@ public class Enemy {
 	public void setAttackDamage(int attackDamage) {
 		this.attackDamage = attackDamage;
 	}
+	public Path getPath() {
+		return path;
+	}
+	public void setPath(Path path) {
+		this.path = path;
+	}
 	public int[][] getPosition() {
 		return position;
 	}
 	public void setPosition(int[][] position) {
 		this.position = position;
+	}
+	public double getStep() {
+		return step;
+	}
+	public void setStep(double step) {
+		this.step = step;
 	}
 	public int getCost() {
 		return cost;
@@ -54,5 +85,46 @@ public class Enemy {
 		this.sprite = sprite;
 	}
 	
+	public boolean isAlive(){
+		return alive;
+	}
+	
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	public boolean isAtEnd() {
+		return atEnd;
+	}
+	
+	public void setAtEnd(boolean atEnd) {
+		this.atEnd = atEnd;
+	}
+	
+	public boolean isAttackReady() {
+		return attackReady;
+	}
+
+	public void setAttackReady(boolean attackReady) {
+		this.attackReady = attackReady;
+	}
+
+	public void attack(Player player) {
+		
+	}
+	
+	public void moveForward() {
+		step += step*travelSpeed;
+		
+		position = path.findPos((int)step);
+		
+		if(position == null) {
+			step = path.getPath().size()-1;
+			position = path.findPos((int)step);
+			atEnd = true;
+		}
+		
+		
+	}
 	
 }
