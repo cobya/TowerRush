@@ -5,6 +5,15 @@ public class Player {
 	private int health;
 	private int maxHealth;
 	private int money;
+	private boolean alive;
+	
+	Player() {
+		score = 0;
+		maxHealth = 200;
+		health = maxHealth;
+		money = 500;
+		alive = true;
+	}
 	
 	public int getScore() {
 		return score;
@@ -30,6 +39,27 @@ public class Player {
 	public void setMoney(int money) {
 		this.money = money;
 	}
+	public boolean isAlive() {
+		return alive;
+	}
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
 	
+	public void takeDamage(int dmg) {
+		health -= dmg;
+		if(health <= 0) {
+			health = 0;
+			alive = false;
+		}
+	}
+	
+	public void gainMoney(int money) {
+		this.money += money;
+	}
+	
+	public void depleteMoney(int money) {
+		this.money -= money;
+	}
 	
 }
