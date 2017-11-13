@@ -1,36 +1,96 @@
 package logic;
 
-import java.util.ArrayList;
+import java.util.*;
 
-public class Wave {
-	private ArrayList<Enemy> troopTypes;
-	private double delayTime;
-	private double totalTime;
+public class Wave implements runnable {
+	private ListIterator<Enemy> troopIt;
 	private int waveNumber;
+	private long delayWave;
+	private long delayEnemy;	//could be an array if different wait times
+	private ArrayList<Enemy> troopType;
+	private Enemy currentEnemy;
+	private boolean newEnemy, waveOver;
 	
-	public ArrayList<Enemy> getTroopTypes() {
-		return troopTypes;
+	Wave() {
+		troopIt = troopType.listIterator();
 	}
-	public void setTroopTypes(ArrayList<Enemy> troopTypes) {
-		this.troopTypes = troopTypes;
+	
+	public void setWaveNumber(int waveNumber){
+		this.waveNumber = waveNumber;
 	}
-	public double getDelayTime() {
-		return delayTime;
-	}
-	public void setDelayTime(double delayTime) {
-		this.delayTime = delayTime;
-	}
-	public double getTotalTime() {
-		return totalTime;
-	}
-	public void setTotalTime(double totalTime) {
-		this.totalTime = totalTime;
-	}
+	
 	public int getWaveNumber() {
 		return waveNumber;
 	}
-	public void setWaveNumber(int waveNumber) {
-		this.waveNumber = waveNumber;
+	
+	public void setDelayWave(long delayWave) {
+		this.delayWave = delayWave;
 	}
+	
+	public long getDelayWave() {
+		return delayWave;
+	}
+	
+	public long getTotalTime(){
+		return delayWave + troopType.size()*delayEnemy;
+	}
+	
+	public void setCurrentEnemy(Enemy enemy) {
+		this.currentEnemy = enemy;
+	}
+	
+	public Enemy getCurrentEnemy() {
+		return currentEnemy;
+	}
+	
+	public void setNewEnemy(boolean newEnemy) {
+		this.newEnemy = newEnemy;
+	}
+	
+	public boolean isNewEnemy() {
+		return newEnemy;
+	}
+	
+	public void setWaveOver(boolean over) {
+		waveOver = over;
+	}
+	
+	public boolean isWaveOver() {
+		return waveOver;
+	}
+	
+	public void run() {
+		long timeStart, timeDiff;
+		
+		Thread.sleep(delayWave);
+		while(!isWaveOver()) {
+			newEnemy = true;
+			
+			if(troopIt.hasNext()) {
+			timeDiff = System.currentTimeMillis() - timeStart;
+			Thread.sleep(delayEnemy - timeDiff);
+			timeStart = System.currentTimeMillis();
+			//enemy should have been deployed by now
+			
+				currentEnemy = troopIt.next();
+			}
+			else {
+				waveOver = true;
+			}
+		}
+		
+	}
+	
+	public Enemy deployEnemy() {
+		Enemy temp = currentEnemy;
+		newEnemy = false;
+
+		return temp;
+	}
+	
+
+	
+	
+	
 	
 }
