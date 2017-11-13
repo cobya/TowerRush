@@ -1,19 +1,21 @@
 package logic;
 
 import java.awt.Image;
+import java.awt.Point;
 
 public class Enemy {
 	public enum EnemyClass {
 		SPEED, STRENGTH, HEALTH  //Denotes dominant attribute; will rename
 	}
 	
+	private EnemyClass eClass;
 	private int travelSpeed;
 	private int attackSpeed;
 	private int health;
 	private int maxHealth;
 	private int attackDamage;
 	private Path path;
-	private int[][] position;
+	private Point position;
 	private double step;
 	private int cost;
 	private boolean alive, atEnd, attackReady;
@@ -21,7 +23,20 @@ public class Enemy {
 	
 	
 	Enemy() {
-		
+		position = new Point();
+	}
+	
+	Enemy(EnemyClass eClass) {
+		this.eClass = eClass;
+		switch(eClass){
+		case SPEED:
+			break;
+			
+		case STRENGTH: 
+			break;
+		case HEALTH:
+			break;
+		}
 	}
 
 	public int getTravelSpeed() {
@@ -60,10 +75,10 @@ public class Enemy {
 	public void setPath(Path path) {
 		this.path = path;
 	}
-	public int[][] getPosition() {
+	public Point getPosition() {
 		return position;
 	}
-	public void setPosition(int[][] position) {
+	public void setPosition(Point position) {
 		this.position = position;
 	}
 	public double getStep() {

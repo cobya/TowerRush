@@ -1,23 +1,24 @@
 package logic;
 
+import java.awt.Point;
 import java.util.*;
 
 public class Path {
-	private ArrayList<int[][]> path;
+	private ArrayList<Point> path;
 	
 	public Path(){
-		path = new ArrayList<int[][]>();
+		path = new ArrayList<Point>();
 	}
 
-	public ArrayList<int[][]> getPath() {
+	public ArrayList<Point> getPath() {
 		return path;
 	}
 
-	public void setPath(ArrayList<int[][]> coordinates) {
+	public void setPath(ArrayList<Point> coordinates) {
 		this.path = coordinates;
 	}
 	
-	public int[][] findPos(int step) {
+	public Point findPos(int step) {
 		if(step < path.size() && step >= 0) {
 			return path.get(step);
 		}
@@ -28,3 +29,4 @@ public class Path {
 
 	
 }
+
