@@ -2,7 +2,7 @@ package logic;
 
 import java.util.*;
 
-public class Wave implements runnable {
+public class Wave implements Runnable {
 	private ListIterator<Enemy> troopIt;
 	private int waveNumber;
 	private long delayWave;
@@ -62,13 +62,23 @@ public class Wave implements runnable {
 	public void run() {
 		long timeStart, timeDiff;
 		
-		Thread.sleep(delayWave);
+		try {
+			Thread.sleep(delayWave);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		timeStart = System.currentTimeMillis();
 		while(!isWaveOver()) {
 			newEnemy = true;
 			
 			if(troopIt.hasNext()) {
 			timeDiff = System.currentTimeMillis() - timeStart;
-			Thread.sleep(delayEnemy - timeDiff);
+			try {Thread.sleep(delayEnemy - timeDiff);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			timeStart = System.currentTimeMillis();
 			//enemy should have been deployed by now
 			

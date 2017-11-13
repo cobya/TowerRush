@@ -3,7 +3,7 @@ package game;
 import java.util.*;
 import logic.*;
 
-public class Game implements runnable{
+public class Game implements Runnable{
 	
 	private ListIterator<Wave> waveIt;
 	
@@ -111,6 +111,7 @@ public class Game implements runnable{
 		fighters = new ArrayList<Fighter>();
 	}
 	
+	//May need to replace polling with logic-driven events, depending on performance
 	public void run() {
 		long timeStart, timeDiff;
 		boolean gameOver = false;
@@ -121,7 +122,7 @@ public class Game implements runnable{
 			
 			if(currWave.isNewEnemy()) {
 				enemies.add(currWave.deployEnemy());
-				if(currWave.isOver()) {
+				if(currWave.isWaveOver()) {
 					if(waveIt.hasNext()) {
 						currWave = waveIt.next();
 						currWave.run();
@@ -130,7 +131,7 @@ public class Game implements runnable{
 			}
 			
 			for(Enemy temp: enemies) {
-				if(!temp.isAtEnd()) {
+				if(temp.isAtEnd()) {
 					temp.moveForward();
 				}
 			}
@@ -140,6 +141,8 @@ public class Game implements runnable{
 				if(target != null && tempF.isAttackReady()) {
 					tempF.attack(target);
 					if(!target.isAlive()) {
+						//Enemy is dead
+						player.gainMoney(target.getCost());
 						enemies.remove(target);
 					}
 				}
@@ -155,7 +158,7 @@ public class Game implements runnable{
 				}
 			}
 			
-			if(enemies.isEmpty() && currWave.isOver() && currWave == waves.get(waves.size()-1)) {
+			if(enemies.isEmpty() && currWave.isWaveOver() && currWave == waves.get(waves.size()-1)) {
 				gameOver = true;
 			}
 			

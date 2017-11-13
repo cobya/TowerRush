@@ -10,7 +10,8 @@ public class Enemy {
 	
 	private EnemyClass eClass;
 	private int travelSpeed;
-	private int attackSpeed;
+	private long cooldownTime;
+	private long lastAttackTime;
 	private int health;
 	private int maxHealth;
 	private int attackDamage;
@@ -24,19 +25,25 @@ public class Enemy {
 	
 	Enemy() {
 		position = new Point();
+		lastAttackTime = 0;
+		step = 0;
+		alive = true;
+		atEnd = false;
 	}
 	
 	Enemy(EnemyClass eClass) {
+		this();
 		this.eClass = eClass;
 		switch(eClass){
 		case SPEED:
-			break;
-			
+			break;		
 		case STRENGTH: 
 			break;
 		case HEALTH:
 			break;
 		}
+		
+		
 	}
 
 	public int getTravelSpeed() {
@@ -45,11 +52,23 @@ public class Enemy {
 	public void setTravelSpeed(int travelSpeed) {
 		this.travelSpeed = travelSpeed;
 	}
-	public int getAttackSpeed() {
-		return attackSpeed;
+	public EnemyClass geteClass() {
+		return eClass;
 	}
-	public void setAttackSpeed(int attackSpeed) {
-		this.attackSpeed = attackSpeed;
+	public void seteClass(EnemyClass eClass) {
+		this.eClass = eClass;
+	}
+	public long getCooldownTime() {
+		return cooldownTime;
+	}
+	public void setCooldownTime(long cooldownTime) {
+		this.cooldownTime = cooldownTime;
+	}
+	public long getLastAttackTime() {
+		return lastAttackTime;
+	}
+	public void setLastAttackTime(long lastAttackTime) {
+		this.lastAttackTime = lastAttackTime;
 	}
 	public int getHealth() {
 		return health;
@@ -115,17 +134,33 @@ public class Enemy {
 	public void setAtEnd(boolean atEnd) {
 		this.atEnd = atEnd;
 	}
-	
-	public boolean isAttackReady() {
-		return attackReady;
-	}
+
 
 	public void setAttackReady(boolean attackReady) {
 		this.attackReady = attackReady;
 	}
+	
+	public boolean isAttackReady() {
+		if(System.currentTimeMillis() - lastAttackTime > cooldownTime ) {
+			attackReady = true;
+		}
+		else attackReady = false;
+		
+		return attackReady;
+	}
 
 	public void attack(Player player) {
-		
+		player.takeDamage(attackDamage);
+		lastAttackTime = System.currentTimeMillis();
+	}
+	
+	public void takeDamage(int dmg) {
+		health -= dmg;
+		if(health < 0) {
+			//Enemy is dead - handle removing and awarding player in game loop
+			health = 0;
+			alive = false;
+		}
 	}
 	
 	public void moveForward() {

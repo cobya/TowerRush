@@ -22,7 +22,7 @@ public class Fighter {
 	private Image sprite;
 	
 	Fighter() {
-		
+		lastAttackTime = 0;
 	}
 	
 	Fighter(FighterClass fClass) {
