@@ -12,6 +12,7 @@ import logic.Map;
 import logic.Path;
 import logic.Wave;
 
+/* builds sample map for testing and saves into a .ser file*/
 public class BeginnerMapBuilder {
 	public static void main(String[] args) throws IOException {
 		Map beginner = new Map();
