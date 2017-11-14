@@ -2,16 +2,20 @@ package logic;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 
-public class Enemy {
+import javax.imageio.ImageIO;
+
+public class Enemy implements Serializable {
 	public enum EnemyClass {
 		SPEED, STRENGTH, HEALTH  //Denotes dominant attribute; will rename
 	}
 	
 	private EnemyClass eClass;
 	private int travelSpeed;
-	private long cooldownTime;
-	private long lastAttackTime;
 	private int health;
 	private int maxHealth;
 	private int attackDamage;
@@ -19,29 +23,37 @@ public class Enemy {
 	private Point position;
 	private double step;
 	private int cost;
-	private boolean alive, atEnd, attackReady;
-	private Image sprite;
+	private boolean alive, atEnd;
+	private BufferedImage sprite;
 	
 	
-	Enemy() {
+	public Enemy() throws IOException {
 		position = new Point();
-		lastAttackTime = 0;
 		step = 0;
 		alive = true;
 		atEnd = false;
+		sprite = ImageIO.read(new File("resources/enemy1.png"));
 	}
 	
-	Enemy(EnemyClass eClass) {
+	public Enemy(EnemyClass eClass) throws IOException {
 		this();
 		this.eClass = eClass;
 		switch(eClass){
 		case SPEED:
+			maxHealth = 50;
+			attackDamage = 10;
+			travelSpeed = 5;
+			cost = 100;
+			sprite = ImageIO.read(new File("resources/enemy1.png"));
 			break;		
 		case STRENGTH: 
 			break;
 		case HEALTH:
 			break;
 		}
+		
+		health = maxHealth;
+		
 		
 		
 	}
@@ -57,18 +69,6 @@ public class Enemy {
 	}
 	public void seteClass(EnemyClass eClass) {
 		this.eClass = eClass;
-	}
-	public long getCooldownTime() {
-		return cooldownTime;
-	}
-	public void setCooldownTime(long cooldownTime) {
-		this.cooldownTime = cooldownTime;
-	}
-	public long getLastAttackTime() {
-		return lastAttackTime;
-	}
-	public void setLastAttackTime(long lastAttackTime) {
-		this.lastAttackTime = lastAttackTime;
 	}
 	public int getHealth() {
 		return health;
@@ -112,10 +112,10 @@ public class Enemy {
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
-	public Image getSprite() {
+	public BufferedImage getSprite() {
 		return sprite;
 	}
-	public void setSprite(Image sprite) {
+	public void setSprite(BufferedImage sprite) {
 		this.sprite = sprite;
 	}
 	
@@ -136,27 +136,13 @@ public class Enemy {
 	}
 
 
-	public void setAttackReady(boolean attackReady) {
-		this.attackReady = attackReady;
-	}
-	
-	public boolean isAttackReady() {
-		if(System.currentTimeMillis() - lastAttackTime > cooldownTime ) {
-			attackReady = true;
-		}
-		else attackReady = false;
-		
-		return attackReady;
-	}
-
 	public void attack(Player player) {
 		player.takeDamage(attackDamage);
-		lastAttackTime = System.currentTimeMillis();
 	}
 	
 	public void takeDamage(int dmg) {
 		health -= dmg;
-		if(health < 0) {
+		if(health <= 0) {
 			//Enemy is dead - handle removing and awarding player in game loop
 			health = 0;
 			alive = false;
@@ -164,7 +150,7 @@ public class Enemy {
 	}
 	
 	public void moveForward() {
-		step += step*travelSpeed;
+		step += travelSpeed;
 		
 		position = path.findPos((int)step);
 		

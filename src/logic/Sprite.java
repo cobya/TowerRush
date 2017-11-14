@@ -1,7 +1,8 @@
 package logic;
 import java.awt.Image;
+import java.io.Serializable;
 
-public abstract class Sprite {
+public abstract class Sprite implements Serializable{
 	public static enum State{
 		IDLE, MOVING_LEFT, MOVING_RIGHT, MOVING_DOWN, MOVING_UP
 	};

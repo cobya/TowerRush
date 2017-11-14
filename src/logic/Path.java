@@ -1,9 +1,10 @@
 package logic;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.*;
 
-public class Path {
+public class Path implements Serializable{
 	private ArrayList<Point> path;
 	
 	public Path(){

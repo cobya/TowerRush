@@ -1,20 +1,31 @@
 package logic;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Wave implements Runnable {
+public class Wave implements Runnable, Serializable{
 	private ListIterator<Enemy> troopIt;
 	private int waveNumber;
 	private long delayWave;
 	private long delayEnemy;	//could be an array if different wait times
+	private long timeStart, timeDiff;
 	private ArrayList<Enemy> troopType;
 	private Enemy currentEnemy;
 	private boolean newEnemy, waveOver;
 	
-	Wave() {
-		troopIt = troopType.listIterator();
+	public Wave() {
+		troopType = new ArrayList<Enemy>();
+		//troopIt = troopType.listIterator();
 	}
 	
+	public ListIterator<Enemy> getTroopIt() {
+		return troopIt;
+	}
+
+	public void setTroopIt(ListIterator<Enemy> troopIt) {
+		this.troopIt = troopIt;
+	}
+
 	public void setWaveNumber(int waveNumber){
 		this.waveNumber = waveNumber;
 	}
@@ -23,6 +34,15 @@ public class Wave implements Runnable {
 		return waveNumber;
 	}
 	
+	public ArrayList<Enemy> getTroopType() {
+		return troopType;
+	}
+
+	public void setTroopType(ArrayList<Enemy> troopType) {
+		currentEnemy = troopType.get(0);
+		this.troopType = troopType;
+	}
+
 	public void setDelayWave(long delayWave) {
 		this.delayWave = delayWave;
 	}
@@ -31,6 +51,14 @@ public class Wave implements Runnable {
 		return delayWave;
 	}
 	
+	public long getDelayEnemy() {
+		return delayEnemy;
+	}
+
+	public void setDelayEnemy(long delayEnemy) {
+		this.delayEnemy = delayEnemy;
+	}
+
 	public long getTotalTime(){
 		return delayWave + troopType.size()*delayEnemy;
 	}
@@ -58,9 +86,12 @@ public class Wave implements Runnable {
 	public boolean isWaveOver() {
 		return waveOver;
 	}
+
 	
 	public void run() {
-		long timeStart, timeDiff;
+		timeStart = System.currentTimeMillis();
+		troopIt = troopType.listIterator();
+		currentEnemy = troopIt.next();
 		
 		try {
 			Thread.sleep(delayWave);
@@ -74,7 +105,10 @@ public class Wave implements Runnable {
 			
 			if(troopIt.hasNext()) {
 			timeDiff = System.currentTimeMillis() - timeStart;
-			try {Thread.sleep(delayEnemy - timeDiff);
+			try {
+				if(delayEnemy - timeDiff > 0) {
+					Thread.sleep(delayEnemy - timeDiff);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

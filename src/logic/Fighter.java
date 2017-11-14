@@ -2,9 +2,10 @@ package logic;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Fighter {
+public class Fighter implements Serializable{
 	public enum FighterClass {
 		RANGE, STRENGTH, SPEED	//Denotes dominant attribute; will rename
 	}

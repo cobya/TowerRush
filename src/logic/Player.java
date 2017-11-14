@@ -1,13 +1,15 @@
 package logic;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable{
 	private int score;
 	private int health;
 	private int maxHealth;
 	private int money;
 	private boolean alive;
 	
-	Player() {
+	public Player() {
 		score = 0;
 		maxHealth = 200;
 		health = maxHealth;

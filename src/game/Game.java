@@ -2,6 +2,7 @@ package game;
 
 import java.util.*;
 import logic.*;
+import logic.Map;
 
 public class Game implements Runnable{
 	
@@ -20,14 +21,15 @@ public class Game implements Runnable{
 	
 	
 	Game() {
-		waveIt = waves.listIterator();
+		//waveIt = waves.listIterator();
+		enemies = new ArrayList<Enemy>();
 		turnTime = 100; //arbritrary
 
 	}
 	
 	Game(GameScreen gameScreen) {
-		waveIt = waves.listIterator();
-		turnTime = 100; //arbritrary
+		//waveIt = waves.listIterator();
+		turnTime = 10; //arbritrary
 		this.gameScreen = gameScreen;
 	}
 
@@ -106,32 +108,40 @@ public class Game implements Runnable{
 
 	public void gameInit(){
 		gameOver = false;
-		currWave = waves.get(0);
+		waves = map.getWaves();
+		waveIt = waves.listIterator();
+		currWave = waveIt.next();
 		enemies = new ArrayList<Enemy>();
 		fighters = new ArrayList<Fighter>();
+		player = new Player();
 	}
 	
 	//May need to replace polling with logic-driven events, depending on performance
 	public void run() {
 		long timeStart, timeDiff;
 		boolean gameOver = false;
-		
+		Thread waveThread = new Thread(currWave);
+
 		timeStart = System.currentTimeMillis();
-		currWave.run();
+		waveThread.start();
 		while(!isGameOver()) {
+			
+			//enemies.get(0).moveForward();
 			
 			if(currWave.isNewEnemy()) {
 				enemies.add(currWave.deployEnemy());
+				
 				if(currWave.isWaveOver()) {
 					if(waveIt.hasNext()) {
 						currWave = waveIt.next();
-						currWave.run();
+						waveThread = new Thread(currWave);
+						waveThread.start();
 					}
 				}
 			}
 			
 			for(Enemy temp: enemies) {
-				if(temp.isAtEnd()) {
+				if(!temp.isAtEnd()) {
 					temp.moveForward();
 				}
 			}
@@ -149,23 +159,40 @@ public class Game implements Runnable{
 
 			}
 			
+			ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
 			for(Enemy tempE: enemies) {
-				if(tempE.isAtEnd() && tempE.isAttackReady()) {
+				tempEnemies.add(tempE);
+				if(tempE.isAtEnd()) {
 					tempE.attack(player);
+					tempE.setHealth(0);
+					tempEnemies.remove(tempE);
 					if(!player.isAlive()) {
 						gameOver = true;
 					}
+					
 				}
 			}
+			enemies = tempEnemies;
 			
 			if(enemies.isEmpty() && currWave.isWaveOver() && currWave == waves.get(waves.size()-1)) {
 				gameOver = true;
 			}
 			
-			gameScreen.updateGraphics();
+			gameScreen.repaint();
 			
 			timeDiff = System.currentTimeMillis() - timeStart;
-			Thread.sleep(turnTime - timeDiff);
+			try {
+				if(turnTime-timeDiff > 0) {
+				Thread.sleep(turnTime - timeDiff);
+				}
+				else {
+				}
+				if(timeDiff > 0) {
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			timeStart = System.currentTimeMillis();	
 		}
 		

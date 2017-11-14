@@ -1,8 +1,9 @@
 package logic;
 
 import java.awt.Point;
+import java.io.Serializable;
 
-public class Slot {
+public class Slot implements Serializable{
 	private Point pos;
 	private Fighter fighter;
 	
