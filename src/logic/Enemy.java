@@ -21,7 +21,7 @@ public class Enemy implements Serializable {
 	private int attackDamage;
 	private Path path;
 	private Point position;
-	private double step;
+	private double step;	//Determines how far along path it is
 	private int cost;
 	private boolean alive, atEnd;
 	private BufferedImage sprite;
@@ -32,19 +32,19 @@ public class Enemy implements Serializable {
 		step = 0;
 		alive = true;
 		atEnd = false;
-		sprite = ImageIO.read(new File("resources/enemy1.png"));
+		sprite = ImageIO.read(new File("images/enemy1.png"));
 	}
 	
 	public Enemy(EnemyClass eClass) throws IOException {
 		this();
 		this.eClass = eClass;
 		switch(eClass){
-		case SPEED:
+		case SPEED://All just arbritrary values right now
 			maxHealth = 50;
 			attackDamage = 10;
 			travelSpeed = 5;
 			cost = 100;
-			sprite = ImageIO.read(new File("resources/enemy1.png"));
+			sprite = ImageIO.read(new File("images/enemy1.png"));	
 			break;		
 		case STRENGTH: 
 			break;
@@ -154,6 +154,7 @@ public class Enemy implements Serializable {
 		
 		position = path.findPos((int)step);
 		
+		//if position == null, it has reached the end of the path
 		if(position == null) {
 			step = path.getPath().size()-1;
 			position = path.findPos((int)step);
