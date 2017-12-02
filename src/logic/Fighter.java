@@ -2,8 +2,13 @@ package logic;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class Fighter implements Serializable{
 	public enum FighterClass {
@@ -16,26 +21,53 @@ public class Fighter implements Serializable{
 	private int range;
 	private Point position;
 	private int cost;
+	private int value; 	//money earned for selling it
 	private int level;
 	private long lastAttackTime;
 	private boolean attackReady;
 	private Slot slot;
-	private Image sprite;
+	private BufferedImage sprite;
 	
-	Fighter() {
+	public Fighter() {
 		lastAttackTime = 0;
+		try {
+			sprite = ImageIO.read(new File("images/fighter1.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	Fighter(FighterClass fClass) {
+	public Fighter(FighterClass fClass) {
 		this.fClass = fClass;
 		switch(fClass) {
 		case RANGE:
+			try {
+				cost = 200;
+				attackDamage = 10;
+				cooldownTime = 500;
+				range = 1000;
+				
+				
+				sprite = ImageIO.read(new File("images/fighter1.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		case STRENGTH:
 			break;
 		case SPEED:
 			break;
 		}
+	}
+	
+	public void setfClass(Fighter.FighterClass fClass) {
+		this.fClass = fClass;
+	}
+	
+	public Fighter.FighterClass getfClass() {
+		return fClass;
 	}
 	
 	public long getCooldownTime() {
@@ -68,6 +100,13 @@ public class Fighter implements Serializable{
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
+	public int getValue() {
+		return value;
+	}
+	public void setValue(int value) {
+		this.value = value;
+	}
+
 	public int getLevel() {
 		return level;
 	}
@@ -77,15 +116,16 @@ public class Fighter implements Serializable{
 	public Slot getSlot() {
 		return slot;
 	}
-	public Image getSprite() {
+	public BufferedImage getSprite() {
 		return sprite;
 	}
-	public void setSprite(Image sprite) {
+	public void setSprite(BufferedImage sprite) {
 		this.sprite = sprite;
 	}	
 	
 	public void setSlot(Slot slot) {
 		this.position = (Point) slot.getPos().clone();
+		this.slot = slot;
 		if(!this.equals(slot.getFighter())) {
 			slot.setFighter(this);
 		}
@@ -113,13 +153,13 @@ public class Fighter implements Serializable{
 	
 	public Enemy detectEnemy(ArrayList<Enemy> enemies){
 		Enemy temp = null;
-		double minStep = 999999999;
+		double maxStep = 0;
 		double dist;
 		for(Enemy enemy: enemies) {
 			dist = Math.sqrt(Math.pow(position.x - enemy.getPosition().getX(), 2) + Math.pow(position.y - enemy.getPosition().getY(), 2));
-			if( dist < range && enemy.getStep() < minStep) {
+			if( dist < range && enemy.getStep() > maxStep) {
 				temp = enemy;
-				minStep = enemy.getStep();
+				maxStep = enemy.getStep();
 			}
 		}
 			

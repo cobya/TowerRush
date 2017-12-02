@@ -3,11 +3,14 @@ package logic;
 import java.io.Serializable;
 import java.util.*;
 
-public class Wave implements Runnable, Serializable{
+public class Wave implements Serializable{
+	private enum WaveState {WAIT_WAVE, WAIT_ENEMY, OVER};
+	private WaveState currState;
 	private ListIterator<Enemy> troopIt;
 	private int waveNumber;
 	private long delayWave;
 	private long delayEnemy;	//could be an array if different wait times
+	private int tickCount;
 	private long timeStart, timeDiff;
 	private ArrayList<Enemy> troopType;
 	private Enemy currentEnemy;
@@ -87,43 +90,60 @@ public class Wave implements Runnable, Serializable{
 		return waveOver;
 	}
 
-	
-	public void run() {
-		timeStart = System.currentTimeMillis();
+	public void init() {
+		currState = WaveState.WAIT_WAVE;
 		troopIt = troopType.listIterator();
-		currentEnemy = troopIt.next();
-		
-		try {
-			Thread.sleep(delayWave);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		timeStart = System.currentTimeMillis();
-		while(!isWaveOver()) {
-			newEnemy = true;
-			
-			if(troopIt.hasNext()) {
-			timeDiff = System.currentTimeMillis() - timeStart;
-			try {
-				if(delayEnemy - timeDiff > 0) {
-					Thread.sleep(delayEnemy - timeDiff);
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			timeStart = System.currentTimeMillis();
-			//enemy should have been deployed by now
-			
-				currentEnemy = troopIt.next();
-			}
-			else {
-				waveOver = true;
-			}
-		}
 		
 	}
+	
+	public void tick() {
+		WaveState nextState = currState;
+		++tickCount;
+		switch(currState) {
+		case WAIT_WAVE:
+			if(tickCount >= delayWave) {
+				if(troopIt.hasNext()) {
+					currentEnemy = troopIt.next();
+					nextState = WaveState.WAIT_ENEMY;
+				}
+				else {
+					nextState = WaveState.OVER;
+				}
+				tickCount = 0;
+			}
+			else {
+				nextState = WaveState.WAIT_WAVE;
+			}
+			
+			break;
+			
+		case WAIT_ENEMY:
+			if(tickCount >= delayEnemy) {
+				currentEnemy = troopIt.next();
+				newEnemy = true;
+				if(troopIt.hasNext()) {
+					nextState = WaveState.WAIT_ENEMY;
+				}
+				else {
+					nextState = WaveState.OVER;
+				}
+				tickCount = 0;
+			}
+			else {
+				nextState = WaveState.WAIT_ENEMY;
+			}
+		break;
+			
+		case OVER: 
+			waveOver = true;
+			nextState = WaveState.OVER;
+			break;
+			
+		}
+		
+		currState = nextState;
+	}
+	
 	
 	public Enemy deployEnemy() {
 		Enemy temp = currentEnemy;

@@ -10,9 +10,9 @@ import javax.imageio.ImageIO;
 import logic.Enemy;
 import logic.Map;
 import logic.Path;
+import logic.Slot;
 import logic.Wave;
 
-/* builds sample map for testing and saves into a .ser file*/
 public class BeginnerMapBuilder {
 	public static void main(String[] args) throws IOException {
 		Map beginner = new Map();
@@ -51,13 +51,13 @@ public class BeginnerMapBuilder {
 		wave2.setWaveNumber(2);
 		wave3.setWaveNumber(3);
 		
-		wave1.setDelayWave(1000);
-		wave2.setDelayWave(1000);
-		wave3.setDelayWave(1000);
+		wave1.setDelayWave(50);
+		wave2.setDelayWave(50);
+		wave3.setDelayWave(50);
 		
-		wave1.setDelayEnemy(1000);
-		wave2.setDelayEnemy(1000);
-		wave3.setDelayEnemy(1000);
+		wave1.setDelayEnemy(100);
+		wave2.setDelayEnemy(100);
+		wave3.setDelayEnemy(100);
 		
 		ArrayList<Enemy> enemyWave1 = new ArrayList<Enemy>();
 		ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
@@ -86,7 +86,10 @@ public class BeginnerMapBuilder {
 		waves.add(wave2);
 		waves.add(wave3);
 		
+		Slot slot = new Slot();
+		slot.setPos(new Point(239,268));
 		
+		beginner.getSlots().add(slot);
 		beginner.setWaves(waves);
 		beginner.setTowerPos(new Point(776, 646));
 		beginner.setBackground(ImageIO.read(new File("images/beginner.png")));

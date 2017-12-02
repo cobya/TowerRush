@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import logic.*;
 import logic.Map;
@@ -17,6 +19,7 @@ public class Game implements Runnable{
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Fighter> fighters;
 	private boolean gameOver;
+	private BufferedImage screen;
 	
 	
 	
@@ -105,8 +108,18 @@ public class Game implements Runnable{
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
+	
+	
 
-	public void gameInit(){
+	public BufferedImage getScreen() {
+		return screen;
+	}
+
+	public void setScreen(BufferedImage screen) {
+		this.screen = screen;
+	}
+
+	public void init(){
 		gameOver = false;
 		waves = map.getWaves();
 		waveIt = waves.listIterator();
@@ -114,89 +127,152 @@ public class Game implements Runnable{
 		enemies = new ArrayList<Enemy>();
 		fighters = new ArrayList<Fighter>();
 		player = new Player();
+		gameOver = false;
+		
+		screen = new BufferedImage(map.getBackground().getWidth(), map.getBackground().getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		currWave.init();
+	}
+	
+	public void tick() {
+		
+		currWave.tick();
+		if(currWave.isNewEnemy()) {
+			enemies.add(currWave.deployEnemy());
+		}
+		if(currWave.isWaveOver()) {
+			if(waveIt.hasNext()) {
+				currWave = waveIt.next();
+				currWave.init();
+			}
+		}
+		
+		for(Enemy temp: enemies) {
+			if(!temp.isAtEnd()) {
+				temp.moveForward();
+			}
+		}
+		
+		for(Fighter tempF: fighters) {
+			Enemy target = tempF.detectEnemy(enemies);
+			if(target != null && tempF.isAttackReady()) {
+				tempF.attack(target);
+				if(!target.isAlive()) {
+					//Enemy is dead
+					player.gainMoney(target.getCost());
+					enemies.remove(target);
+				}
+			}
+
+		}
+		
+		ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
+		for(Enemy tempE: enemies) {
+			tempEnemies.add(tempE);
+			if(tempE.isAtEnd()) {
+				tempE.attack(player);
+				tempE.setHealth(0);
+				tempEnemies.remove(tempE);
+				if(!player.isAlive()) {
+					gameOver = true;
+				}
+				
+			}
+		}
+		
+		enemies = tempEnemies;
+		
+		//Handle Player Input
+		if(gameScreen.getUnprocessedPlayerAction()!=null) {
+			switch(gameScreen.getUnprocessedPlayerAction()) {
+			case BUY:
+				Fighter newFighter = new Fighter(gameScreen.getSelectedFighterClass());
+				if(player.getMoney() - newFighter.getCost() >= 0) {
+					player.depleteMoney(newFighter.getCost());
+					newFighter.setSlot(gameScreen.getSelectedSlot());
+					fighters.add(newFighter);
+				}
+				break;
+			case SELL:
+				Fighter tempFighter = gameScreen.getSelectedFighter();
+				if(tempFighter != null) {
+					player.gainMoney(tempFighter.getValue());
+					fighters.remove(tempFighter);
+					tempFighter.getSlot().removeFighter();
+				}
+				gameScreen.setSelectedFighter(null);
+				tempFighter = null;
+				//this fighter should no longer exist
+				break;
+			case UPGRADE:
+				Fighter tempFighter1 = gameScreen.getSelectedFighter();
+				if(player.getMoney() - tempFighter1.getCost() >= 0) {
+					player.depleteMoney(tempFighter1.getCost());
+					tempFighter1.levelUp();
+				}
+				break;
+			}
+			gameScreen.setUnprocessedPlayerAction(null);	
+		}
+		
+		if(enemies.isEmpty() && currWave.isWaveOver() && currWave.equals(waves.get(waves.size()-1))) {
+			gameOver = true;
+		}
 	}
 	
 	//May need to replace polling with logic-driven events, depending on performance
 	public void run() {
-		long timeStart, timeDiff;
-		boolean gameOver = false;
-		Thread waveThread = new Thread(currWave);
+		double currTime;
+		double prevTime;
 
-		timeStart = System.currentTimeMillis();
-		waveThread.start();
+		double msPerTick = 33;	
+		double unprocessedTicks = 1;
+		
+		boolean shouldRender = false;
+		
+		init();
+		currTime = System.nanoTime();
+		
 		while(!isGameOver()) {
+			prevTime = currTime;
+			currTime = System.nanoTime();
+			double timeDiff = currTime - prevTime;
+			unprocessedTicks += ((currTime - prevTime) / (1000000*msPerTick));
 			
-			//enemies.get(0).moveForward();
-			
-			if(currWave.isNewEnemy()) {
-				enemies.add(currWave.deployEnemy());
-				
-				if(currWave.isWaveOver()) {
-					if(waveIt.hasNext()) {
-						currWave = waveIt.next();
-						waveThread = new Thread(currWave);
-						waveThread.start();
-					}
-				}
-			}
-			
-			for(Enemy temp: enemies) {
-				if(!temp.isAtEnd()) {
-					temp.moveForward();
-				}
-			}
-			
-			for(Fighter tempF: fighters) {
-				Enemy target = tempF.detectEnemy(enemies);
-				if(target != null && tempF.isAttackReady()) {
-					tempF.attack(target);
-					if(!target.isAlive()) {
-						//Enemy is dead
-						player.gainMoney(target.getCost());
-						enemies.remove(target);
-					}
-				}
 
+			
+			if(unprocessedTicks >= 1) {
+				shouldRender = true;
+			}
+			for(int i = 1; i <= unprocessedTicks; ++i) {
+				tick();
+				unprocessedTicks--;
 			}
 			
-			ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
-			for(Enemy tempE: enemies) {
-				tempEnemies.add(tempE);
-				if(tempE.isAtEnd()) {
-					tempE.attack(player);
-					tempE.setHealth(0);
-					tempEnemies.remove(tempE);
-					if(!player.isAlive()) {
-						gameOver = true;
-					}
-					
-				}
-			}
-			enemies = tempEnemies;
-			
-			if(enemies.isEmpty() && currWave.isWaveOver() && currWave == waves.get(waves.size()-1)) {
-				gameOver = true;
+			if(shouldRender) {
+				render();
+				gameScreen.repaint();
+				shouldRender = false;
 			}
 			
-			gameScreen.repaint();
 			
-			timeDiff = System.currentTimeMillis() - timeStart;
-			try {
-				if(turnTime-timeDiff > 0) {
-				Thread.sleep(turnTime - timeDiff);
-				}
-				else {
-				}
-				if(timeDiff > 0) {
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			timeStart = System.currentTimeMillis();	
 		}
 		
 		//tell gameScreen to do endGame stuff
 		
 	}
+
+	private void render() {
+		Graphics g = screen.getGraphics();
+		
+		g.drawImage(map.getBackground(), 0, 0, null);
+		for(Enemy enemy : enemies) {
+			g.drawImage(enemy.getSprite(), (int) enemy.getPosition().getX(), (int) enemy.getPosition().getY(), null);
+		}
+		for(Fighter fighter : fighters) {
+			g.drawImage(fighter.getSprite(), (int) fighter.getPosition().getX(), (int) fighter.getPosition().getY(), null);
+		}
+		
+	}
+	
 }

@@ -25,11 +25,14 @@ public class Map implements Serializable {
 	private Point towerPos;
 	private ArrayList<Fighter> fighters;
 	private ArrayList<Wave> waves;
+	private ArrayList<Slot> slots;
 	private BufferedImage background;
 	private String backgroundFileName;
 	
 	public Map() {
 		fighters = new ArrayList<Fighter>();
+		waves = new ArrayList<Wave>();
+		slots = new ArrayList<Slot>();
 	}
 	
 	public String getBackgroundFileName() {
@@ -60,6 +63,12 @@ public class Map implements Serializable {
 	}
 	public ArrayList<Wave> getWaves() {
 		return waves;
+	}
+	public void setSlots(ArrayList<Slot> slots) {
+		this.slots = slots;
+	}
+	public ArrayList<Slot> getSlots() {
+		return slots;
 	}
 	public void setWaves(ArrayList<Wave> waves) {
 		this.waves = waves;
