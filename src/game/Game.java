@@ -267,10 +267,12 @@ public class Game implements Runnable{
 		
 		g.drawImage(map.getBackground(), 0, 0, null);
 		for(Enemy enemy : enemies) {
-			g.drawImage(enemy.getSprite(), (int) enemy.getPosition().getX(), (int) enemy.getPosition().getY(), null);
+			g.drawString(enemy.getHealth() + "/" + enemy.getMaxHealth(), (int) enemy.getSprite().getPosition().getX(), (int) enemy.getSprite().getPosition().getY() - 5);
+			g.drawImage(enemy.getSprite().getCurrImage(), (int) enemy.getSprite().getPosition().getX(), (int) enemy.getSprite().getPosition().getY(), null);
 		}
 		for(Fighter fighter : fighters) {
-			g.drawImage(fighter.getSprite(), (int) fighter.getPosition().getX(), (int) fighter.getPosition().getY(), null);
+			
+			g.drawImage(fighter.getSprite().getCurrImage(), (int) fighter.getSprite().getPosition().getX(), (int) fighter.getSprite().getPosition().getY(), null);
 		}
 		
 	}

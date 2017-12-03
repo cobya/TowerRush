@@ -26,40 +26,35 @@ public class Fighter implements Serializable{
 	private long lastAttackTime;
 	private boolean attackReady;
 	private Slot slot;
-	private BufferedImage sprite;
+	private FighterSprite sprite;
 	
 	public Fighter() {
 		lastAttackTime = 0;
-		try {
-			sprite = ImageIO.read(new File("images/fighter1.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		sprite = new FighterSprite(this);
+		
 	}
 	
 	public Fighter(FighterClass fClass) {
 		this.fClass = fClass;
 		switch(fClass) {
 		case RANGE:
-			try {
-				cost = 200;
-				attackDamage = 10;
-				cooldownTime = 500;
-				range = 1000;
+	
+			cost = 200;
+			attackDamage = 10;
+			cooldownTime = 500;
+			range = 1000;
 				
 				
-				sprite = ImageIO.read(new File("images/fighter1.png"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				
+			
 			break;
 		case STRENGTH:
 			break;
 		case SPEED:
 			break;
 		}
+		
+		sprite = new FighterSprite(this);
 	}
 	
 	public void setfClass(Fighter.FighterClass fClass) {
@@ -93,6 +88,8 @@ public class Fighter implements Serializable{
 	}
 	public void setPosition(Point position) {
 		this.position = position;
+		sprite.updatePositionDimension();
+		
 	}
 	public int getCost() {
 		return cost;
@@ -116,10 +113,10 @@ public class Fighter implements Serializable{
 	public Slot getSlot() {
 		return slot;
 	}
-	public BufferedImage getSprite() {
+	public FighterSprite getSprite() {
 		return sprite;
 	}
-	public void setSprite(BufferedImage sprite) {
+	public void setSprite(FighterSprite sprite) {
 		this.sprite = sprite;
 	}	
 	
@@ -130,6 +127,7 @@ public class Fighter implements Serializable{
 			slot.setFighter(this);
 		}
 		this.slot = slot;
+		sprite.updatePositionDimension();
 	}
 	
 	public boolean isAttackReady() {
@@ -147,6 +145,7 @@ public class Fighter implements Serializable{
 	
 	
 	public void attack(Enemy enemy) {
+		sprite.drawAim(enemy);
 		enemy.takeDamage(this.attackDamage);
 		lastAttackTime = System.currentTimeMillis();
 	}

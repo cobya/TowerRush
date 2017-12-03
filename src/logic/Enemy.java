@@ -22,17 +22,18 @@ public class Enemy implements Serializable {
 	private Path path;
 	private Point position;
 	private double step;	//Determines how far along path it is
+	private double stepCounter; //For sprite toggle
 	private int cost;
 	private boolean alive, atEnd;
-	private BufferedImage sprite;
+	private EnemySprite sprite;
 	
 	
 	public Enemy() throws IOException {
 		position = new Point();
 		step = 0;
+		stepCounter = 0;
 		alive = true;
 		atEnd = false;
-		sprite = ImageIO.read(new File("images/enemy1.png"));
 	}
 	
 	public Enemy(EnemyClass eClass) throws IOException {
@@ -44,9 +45,14 @@ public class Enemy implements Serializable {
 			attackDamage = 10;
 			travelSpeed = 5;
 			cost = 100;
-			sprite = ImageIO.read(new File("images/enemy1.png"));	
+			sprite = new EnemySprite(this);	
 			break;		
 		case STRENGTH: 
+			maxHealth = 50;
+			attackDamage = 10;
+			travelSpeed = 5;
+			cost = 100;
+			sprite = new EnemySprite(this);	
 			break;
 		case HEALTH:
 			break;
@@ -112,10 +118,10 @@ public class Enemy implements Serializable {
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
-	public BufferedImage getSprite() {
+	public EnemySprite getSprite() {
 		return sprite;
 	}
-	public void setSprite(BufferedImage sprite) {
+	public void setSprite(EnemySprite sprite) {
 		this.sprite = sprite;
 	}
 	
@@ -150,17 +156,43 @@ public class Enemy implements Serializable {
 	}
 	
 	public void moveForward() {
+		Point newPos;
 		step += travelSpeed;
 		
-		position = path.findPos((int)step);
+		newPos = path.findPos((int)step);
 		
 		//if position == null, it has reached the end of the path
-		if(position == null) {
+		if(newPos == null) {
 			step = path.getPath().size()-1;
-			position = path.findPos((int)step);
+			newPos = path.findPos((int)step);
 			atEnd = true;
 		}
 		
+		if(newPos.x - position.x > 1) {
+			sprite.setDirection(EnemySprite.Direction.RIGHT);
+		}
+		else if (newPos.x - position.x < -1) {
+			sprite.setDirection(EnemySprite.Direction.LEFT);
+		}
+		else if (newPos.y - position.y > 1) {
+			sprite.setDirection(EnemySprite.Direction.FRONT);
+		}
+		else if (newPos.y - position.y < -1) {
+			sprite.setDirection(EnemySprite.Direction.BACK);
+		}
+		
+		
+		position = newPos;
+		
+		if(stepCounter >= 50) {
+			stepCounter = 0;
+			sprite.toggleStep();
+		}
+		else {
+			stepCounter += travelSpeed;
+		}
+		
+		sprite.updatePositionDimension();
 		
 	}
 	

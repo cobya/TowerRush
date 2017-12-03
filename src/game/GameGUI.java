@@ -52,7 +52,7 @@ public class GameGUI extends JFrame {
 		try {
 		
 		gameScreen = new GameScreen();
-		//add(gameScreen);
+		add(gameScreen);
 		game = new Game();
 		gameScreen.runGame();
 		remove(mainMenu);
