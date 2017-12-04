@@ -1,23 +1,9 @@
 package logic;
 
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.ListIterator;
-
-import javax.imageio.ImageIO;
-
-import logic.Enemy.EnemyClass;
 
 //Contains information on waves, fighters, slots, and paths
 public class Map implements Serializable {

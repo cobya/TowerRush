@@ -1,19 +1,13 @@
 package logic;
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.imageio.ImageIO;
-import javax.swing.text.Position;
 
 //contains multiple images for each state of the enemy's animation
 public class EnemySprite implements Serializable{

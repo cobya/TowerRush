@@ -11,14 +11,12 @@ import java.util.ArrayList;
 
 import javax.imageio.*;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import logic.Enemy;
 import logic.Fighter;
 import logic.Fighter.FighterClass;
-import logic.Map;
 import logic.Player;
 import logic.Slot;
 
