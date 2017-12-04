@@ -103,7 +103,7 @@ public class Wave implements Serializable{
 		case WAIT_WAVE:
 			if(tickCount >= delayWave) {
 				if(troopIt.hasNext()) {
-					currentEnemy = troopIt.next();
+					//currentEnemy = troopIt.next();
 					nextState = WaveState.WAIT_ENEMY;
 				}
 				else {

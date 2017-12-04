@@ -7,7 +7,8 @@ import logic.*;
 import logic.Map;
 
 public class Game implements Runnable{
-	
+	public enum Difficulty {BEGINNER, INTERMEDIATE, ADVANCED};
+	private Difficulty difficulty;
 	private ListIterator<Wave> waveIt;
 	
 	private long turnTime;
@@ -34,6 +35,7 @@ public class Game implements Runnable{
 		//waveIt = waves.listIterator();
 		turnTime = 10; //arbritrary
 		this.gameScreen = gameScreen;
+		difficulty = gameScreen.getDifficulty();
 	}
 
 	
@@ -120,13 +122,16 @@ public class Game implements Runnable{
 	}
 
 	public void init(){
+		if(map == null || player == null) {
+			System.out.println("map or player not set");
+			System.exit(0);
+		}
 		gameOver = false;
 		waves = map.getWaves();
 		waveIt = waves.listIterator();
 		currWave = waveIt.next();
 		enemies = new ArrayList<Enemy>();
 		fighters = new ArrayList<Fighter>();
-		player = new Player();
 		gameOver = false;
 		
 		screen = new BufferedImage(map.getBackground().getWidth(), map.getBackground().getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -220,12 +225,11 @@ public class Game implements Runnable{
 		}
 	}
 	
-	//May need to replace polling with logic-driven events, depending on performance
 	public void run() {
 		double currTime;
 		double prevTime;
 
-		double msPerTick = 33;	
+		double msPerTick = 40;	
 		double unprocessedTicks = 1;
 		
 		boolean shouldRender = false;
@@ -258,7 +262,7 @@ public class Game implements Runnable{
 			
 		}
 		
-		//tell gameScreen to do endGame stuff
+		gameScreen.handleEndGame(player);
 		
 	}
 

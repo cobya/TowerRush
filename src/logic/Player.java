@@ -2,6 +2,8 @@ package logic;
 
 import java.io.Serializable;
 
+import game.Game;
+
 public class Player implements Serializable{
 	private int score;
 	private int health;
@@ -15,6 +17,32 @@ public class Player implements Serializable{
 		health = maxHealth;
 		money = 500;
 		alive = true;
+	}
+	
+	public Player(Game.Difficulty difficulty) {
+		switch(difficulty) {
+		case BEGINNER:
+			score = 0;
+			maxHealth = 200;
+			health = maxHealth;
+			money = 500;
+			alive = true;
+			break;
+		case INTERMEDIATE:
+			score = 0;
+			maxHealth = 200;
+			health = maxHealth;
+			money = 500;
+			alive = true;
+			break;
+		case ADVANCED:
+			score = 0;
+			maxHealth = 200;
+			health = maxHealth;
+			money = 500;
+			alive = true;
+			break;
+		}
 	}
 	
 	public int getScore() {

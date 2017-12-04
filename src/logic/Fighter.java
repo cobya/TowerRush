@@ -38,19 +38,22 @@ public class Fighter implements Serializable{
 		this.fClass = fClass;
 		switch(fClass) {
 		case RANGE:
-	
 			cost = 200;
 			attackDamage = 10;
 			cooldownTime = 500;
-			range = 1000;
-				
-				
-				
-			
+			range = 500;
 			break;
 		case STRENGTH:
+			cost = 200;
+			attackDamage = 50;
+			cooldownTime = 500;
+			range = 300;
 			break;
 		case SPEED:
+			cost = 200;
+			attackDamage = 5;
+			cooldownTime = 100;
+			range = 200;
 			break;
 		}
 		
@@ -166,6 +169,7 @@ public class Fighter implements Serializable{
 		
 	}
 	
+	//increases stats an arbritrary amount
 	public void levelUp() {
 		range = (int) (range * 1.5);
 		attackDamage = (int)(attackDamage * 1.5);

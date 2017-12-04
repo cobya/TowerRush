@@ -19,14 +19,17 @@ import logic.Enemy;
 import logic.Fighter;
 import logic.Fighter.FighterClass;
 import logic.Map;
+import logic.Player;
 import logic.Slot;
 
-
+//GameScreen: illustrates the action of the game and handles all player input during the game
 public class GameScreen extends JPanel{
 	private enum ButtonMode {SELL, UPGRADE};
 	public enum PlayerAction {BUY, SELL, UPGRADE};
 	private PlayerAction unprocessedPlayerAction = null;	//used to tell Game if player did anything
 	private Game game;
+	private GameGUI gameGUI;
+	private Game.Difficulty difficulty;
 	private Thread gameThread;
 	private BufferedImage background;
 	private JMenuBar fighterIconMenu;
@@ -35,7 +38,6 @@ public class GameScreen extends JPanel{
 	private Fighter selectedFighter;
 	private Slot selectedSlot;
 	private Enemy selectedEnemy;
-	private JPanel overlay;
 	private JLabel playerInfo;
 	private JPanel fighterInfoPanel;
 	private JPanel playerInfoPanel;
@@ -50,14 +52,24 @@ public class GameScreen extends JPanel{
 	private int maxPaintCount = 100;
 	private double avgTime = 0;
 	
-	public GameScreen() throws IOException {
+	//simple getters and setters
+	public GameScreen(GameGUI gameGUI) throws IOException {
+		this.gameGUI = gameGUI;
+		this.difficulty = gameGUI.getDifficulty();
 		gameStart = false;
 		fighterIconMenu = new JMenuBar();
 		fighterIcons = new ArrayList<JMenu>();
 		initGameScreen();
 	}
 
-	
+	public Game.Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Game.Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
 	public Fighter getSelectedFighter() {
 		return selectedFighter;
 	}
@@ -82,24 +94,23 @@ public class GameScreen extends JPanel{
 		this.unprocessedPlayerAction = playerAction;
 	}
 	
-	
 	public Slot getSelectedSlot() {
 		return selectedSlot;
 	}
 
+	
 	public void setSelectedSlot(Slot selectedSlot) {
 		this.selectedSlot = selectedSlot;
 	}
 
-	
+	//end simple getters and setters
 	private void initGameScreen() throws IOException  {
-		MapBuilder beginnerMapBuilder = new MapBuilder();
 		game = new Game(this);
 		
-		game.setMap(beginnerMapBuilder.buildBeginnerMap());
+		game.setMap(MapBuilder.buildMap(difficulty));
+		game.setPlayer(new Player(difficulty));
 		
 		background = game.getMap().getBackground();	
-		
 		
 		addMouseListener(new GameMouseListener());
 		setPreferredSize(new Dimension(background.getWidth(), background.getHeight()));
@@ -247,6 +258,7 @@ public class GameScreen extends JPanel{
 		
 	}
 	
+	//handles input to the upgrade and sell buttons
 	private class FighterButtonListener implements ActionListener {
 		private ButtonMode mode;	//SELL or UPGRADE
 		
@@ -259,13 +271,15 @@ public class GameScreen extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			switch(mode) {
 			case SELL:
-				unprocessedPlayerAction = PlayerAction.SELL;
-				//selectedFighterClass already set
+				if(selectedFighter != null) {
+					unprocessedPlayerAction = PlayerAction.SELL;
+				}
 				break;
 				
 			case UPGRADE:
+				if(selectedFighter != null) {
 				unprocessedPlayerAction = PlayerAction.UPGRADE;
-				//selectedFighterClass already set
+				}
 				break;
 			}
 			
@@ -273,6 +287,7 @@ public class GameScreen extends JPanel{
 		
 	}
 	
+	//Handles selecting a fighter to place it
 	private class FighterMenuListener implements MenuListener {
 
 		@Override
@@ -304,6 +319,7 @@ public class GameScreen extends JPanel{
 		}
 	}
 	
+	//handles placing a fighter on a slot
 	private class GameMouseListener implements MouseListener {
 
 		@Override
@@ -361,6 +377,7 @@ public class GameScreen extends JPanel{
 		
 	}
 	
+	//starts game
 	public void runGame() {
 		gameStart = true;
 		
@@ -368,20 +385,12 @@ public class GameScreen extends JPanel{
 		gameThread.start();
 	}
 	
-	
-	private void drawEnemy(Enemy enemy, Graphics g) {
-		//int centerX = (int) enemy.getPosition().getX() - enemy.getSprite().getWidth()/2;
-		//int centerY = (int) enemy.getPosition().getY() - enemy.getSprite().getHeight()/2;
-		//g.drawImage(enemy.getSprite().getCurrImage(), centerX, centerY, this);
+	//passes player to gameGUI for endgame screen (gameScreen acts as a buffer between game and gameGUI)
+	public void handleEndGame(Player player) {
+		gameGUI.handleEndGame(player);
 	}
 	
-	private void drawFighter(Fighter fighter, Graphics g) {
-		int x = (int) fighter.getPosition().getX(); //render image such that bottom right corner matches with slot
-		int y = (int) (fighter.getPosition().getY() - fighter.getSprite().getHeight(this) + fighter.getSlot().getDimension().getHeight());
-		g.drawImage(fighter.getSprite(), x, y, this);
-	}
-	
-	//paint background
+	//paint the game screen and writes text for teh overlay
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		/*double before = System.nanoTime();
