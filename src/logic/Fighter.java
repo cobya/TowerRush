@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 public class Fighter implements Serializable{
 	public enum FighterClass {
-		RANGE, STRENGTH, SPEED	//Denotes dominant attribute; will rename
+		RANGE, STRENGTH, SPEED	//Denotes dominant attribute
 	}
 	
 	private FighterClass fClass;
@@ -20,9 +20,10 @@ public class Fighter implements Serializable{
 	private int attackDamage;
 	private int range;
 	private Point position;
-	private int cost;
-	private int value; 	//money earned for selling it
+	private double cost;
+	private double value; 	//money earned for selling it
 	private int level;
+	private int maxLevel;
 	private long lastAttackTime;
 	private boolean attackReady;
 	private Slot slot;
@@ -40,24 +41,27 @@ public class Fighter implements Serializable{
 		switch(fClass) {
 		case RANGE:
 			cost = 200;
-			attackDamage = 10;
-			cooldownTime = 500;
+			attackDamage = 15;
+			cooldownTime = 1000;
 			range = 500;
 			break;
 		case STRENGTH:
 			cost = 200;
 			attackDamage = 50;
-			cooldownTime = 500;
+			cooldownTime = 2000;
 			range = 300;
 			break;
 		case SPEED:
 			cost = 200;
-			attackDamage = 5;
-			cooldownTime = 100;
+			attackDamage = 10;
+			cooldownTime = 500;
 			range = 200;
 			break;
 		}
 		
+		value = 0;
+		level = 0;
+		maxLevel = 3;
 		sprite = new FighterSprite(this);
 	}
 	
@@ -97,16 +101,16 @@ public class Fighter implements Serializable{
 		sprite.updatePositionDimension();
 		
 	}
-	public int getCost() {
+	public double getCost() {
 		return cost;
 	}
-	public void setCost(int cost) {
+	public void setCost(double cost) {
 		this.cost = cost;
 	}
-	public int getValue() {
+	public double getValue() {
 		return value;
 	}
-	public void setValue(int value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 
@@ -115,6 +119,12 @@ public class Fighter implements Serializable{
 	}
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	public int getMaxLevel() {
+		return maxLevel;
+	}
+	public void setMaxLevel(int level) {
+		this.maxLevel = level;
 	}
 	public Slot getSlot() {
 		return slot;
@@ -175,11 +185,25 @@ public class Fighter implements Serializable{
 	}
 	
 	//increases stats an arbritrary amount
+	//Note: level 0 is before the fighter is placed
 	public void levelUp() {
-		range = (int) (range * 1.5);
-		attackDamage = (int)(attackDamage * 1.5);
-		cooldownTime = (int)(cooldownTime * 0.8);
+		if(level == 0) {
+			value = cost * 0.75;
+			cost = cost * 0.50;
+		}
+		else {
+			range = (int) (range * 1.5);
+			attackDamage = (int)(attackDamage * 1.5);
+			cooldownTime = (int)(cooldownTime * 0.8);
+			cost += cost*0.50;
+			value += cost * 0.75;
+		}
+		
+		++level;
+		
 	}
+
+
 	
 	
 	

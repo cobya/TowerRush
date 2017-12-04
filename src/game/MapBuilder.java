@@ -21,6 +21,10 @@ public class MapBuilder {
 		switch(difficulty) {
 		case BEGINNER:
 			try {
+			
+				//build path; create subpath and add that to the path object. Each for loop is just a line. You can find
+				//the coordinates by opening the map png in paint.net or something
+				
 			for(int i = 646; i > 552; --i) {
 				subPath.add(new Point(545, i));
 			}
@@ -46,6 +50,8 @@ public class MapBuilder {
 			
 			map.addPath(path);
 			
+			//still playing with waves to make the game kind of balanced
+			
 			Wave wave1 = new Wave();
 			//Wave wave2 = new Wave();
 			//Wave wave3 = new Wave();
@@ -65,7 +71,7 @@ public class MapBuilder {
 			ArrayList<Enemy> enemyWave1 = new ArrayList<Enemy>();
 			//ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
 			//ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
-			for(int i = 0; i < 1; ++i) {
+			for(int i = 0; i < 10; ++i) {
 				
 				Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
 				enemy1.setPath(path);
@@ -106,7 +112,6 @@ public class MapBuilder {
 			map.setBackground(ImageIO.read(new File("images/beginner.png")));
 			map.setBackgroundFileName("images/beginner.png");
 			
-			//Map.saveMap(beginner, "Level1.ser");
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -118,6 +123,8 @@ public class MapBuilder {
 			return map;
 			
 		case ADVANCED:
+			
+			//Note: this map has three forks. Make a separate path for each fork. Randomly choose which path to give to each enemy.
 			
 			return map;
 			

@@ -41,25 +41,25 @@ public class Enemy implements Serializable {
 		this();
 		this.eClass = eClass;
 		switch(eClass){
-		case SPEED://All just arbritrary values right now
-			maxHealth = 50;
+		case SPEED:
+			maxHealth = 30;
 			attackDamage = 10;
-			travelSpeed = 5;
+			travelSpeed = 15;
 			cost = 100;
 			sprite = new EnemySprite(this);	
 			break;		
 		case STRENGTH: 
 			maxHealth = 50;
-			attackDamage = 10;
+			attackDamage = 50;
 			travelSpeed = 5;
 			cost = 100;
 			sprite = new EnemySprite(this);	
 			break;
 		case HEALTH:
-			maxHealth = 50;
-			attackDamage = 10;
-			travelSpeed = 5;
-			cost = 100;
+			maxHealth = 200;
+			attackDamage = 20;
+			travelSpeed = 3;
+			cost = 150;
 			sprite = new EnemySprite(this);	
 			break;
 		}

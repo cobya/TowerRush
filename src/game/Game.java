@@ -201,16 +201,18 @@ public class Game implements Runnable{
 			switch(gameScreen.getUnprocessedPlayerAction()) {
 			case BUY:
 				Fighter newFighter = new Fighter(gameScreen.getSelectedFighterClass());
-				if(player.getMoney() - newFighter.getCost() >= 0) {
-					player.depleteMoney(newFighter.getCost());
+				
+				if(player.getMoney() - newFighter.getCost() >= 0) {		
+					player.depleteMoney((int)newFighter.getCost());
 					newFighter.setSlot(gameScreen.getSelectedSlot());
 					fighters.add(newFighter);
+					newFighter.levelUp();
 				}
 				break;
 			case SELL:
 				Fighter tempFighter = gameScreen.getSelectedFighter();
 				if(tempFighter != null) {
-					player.gainMoney(tempFighter.getValue());
+					player.gainMoney((int)tempFighter.getValue());
 					fighters.remove(tempFighter);
 					tempFighter.getSlot().removeFighter();
 				}
@@ -220,8 +222,8 @@ public class Game implements Runnable{
 				break;
 			case UPGRADE:
 				Fighter tempFighter1 = gameScreen.getSelectedFighter();
-				if(player.getMoney() - tempFighter1.getCost() >= 0) {
-					player.depleteMoney(tempFighter1.getCost());
+				if(player.getMoney() - tempFighter1.getCost() >= 0 && tempFighter1.getLevel() < tempFighter1.getMaxLevel()) {
+					player.depleteMoney((int)tempFighter1.getCost());
 					tempFighter1.levelUp();
 				}
 				break;
@@ -240,7 +242,7 @@ public class Game implements Runnable{
 		double currTime;
 		double prevTime;
 
-		double msPerTick = 40;	
+		double msPerTick = 50;	
 		double unprocessedTicks = 1;
 		
 		boolean shouldRender = false;

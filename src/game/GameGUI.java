@@ -580,7 +580,6 @@ public class GameGUI extends JFrame {
 				
 				add(Box.createVerticalGlue());
 				add(message1);
-				add(message2);
 				add(backButton);
 				add(Box.createVerticalGlue());
 				
@@ -598,7 +597,6 @@ public class GameGUI extends JFrame {
 				
 				add(Box.createVerticalGlue());
 				add(message1);
-				add(message2);
 				add(backButton);
 				add(Box.createVerticalGlue());
 				break;
@@ -659,6 +657,7 @@ public class GameGUI extends JFrame {
 						if(player.getScore() > highScoreList.get(i).score) {
 							highScoreList.add(i,userScore);
 							scoreSet = true;
+							break;
 						}
 					}
 					if(!scoreSet) {

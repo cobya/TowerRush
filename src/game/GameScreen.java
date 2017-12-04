@@ -390,7 +390,7 @@ public class GameScreen extends JPanel{
 		gameGUI.handleEndGame(player);
 	}
 	
-	//paint the game screen and writes text for teh overlay
+	//paint the game screen and writes text for the overlay
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		/*double before = System.nanoTime();
@@ -432,13 +432,14 @@ public class GameScreen extends JPanel{
 		}
 		if(selectedFighter != null) {
 			fighterInfo.setText("<html>FIGHTER:<br>Class: " + selectedFighter.getfClass() + "<br>DMG: " + selectedFighter.getAttackDamage() + 
-					"<br>RNG: " + selectedFighter.getRange() +  "<br>COOLDOWN: " + selectedFighter.getCooldownTime() + "</html>");
+					"<br>RNG: " + selectedFighter.getRange() +  "<br>COOLDOWN: " + selectedFighter.getCooldownTime() +"<br>LEVEL: " + selectedFighter.getLevel()
+					+"</html>");
 		}
 		if(selectedFighterClass != null) {
 			Fighter tempFighter = new Fighter(selectedFighterClass);
 			fighterInfo.setText("<html>FIGHTER:<br>Class: " + tempFighter.getfClass() + "<br>DMG: " + tempFighter.getAttackDamage() + 
 					"<br>RNG: " + tempFighter.getRange() +  "<br>COOLDOWN: " + tempFighter.getCooldownTime() + "<br>COST: " + 
-					tempFighter.getCost() + "</html>");
+					(int) tempFighter.getCost() + "</html>");
 		}
 		waveInfo.setText("<html>WAVE: " + game.getCurrWave().getWaveNumber() + "/" + game.getWaves().size() + "</html>");
 		
