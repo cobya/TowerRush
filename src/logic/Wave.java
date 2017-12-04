@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Wave implements Serializable{
-	private enum WaveState {WAIT_WAVE, WAIT_ENEMY, OVER};
+	private enum WaveState {WAIT_WAVE, WAIT_ENEMY, OVER};	//denotes whether the wave is waiting to start, waiting to deploy enemy, or is over
 	private WaveState currState;
-	private ListIterator<Enemy> troopIt;
+	private ListIterator<Enemy> troopIt;	//used to iterate through the enemies
 	private int waveNumber;
 	private long delayWave;
 	private long delayEnemy;	//could be an array if different wait times
@@ -91,16 +91,19 @@ public class Wave implements Serializable{
 	}
 
 	public void init() {
+		tickCount = 0;
 		currState = WaveState.WAIT_WAVE;
 		troopIt = troopType.listIterator();
 		
 	}
 	
+	//wave ticks each turn to handle the timing of enemy deployments
 	public void tick() {
 		WaveState nextState = currState;
-		++tickCount;
+		++tickCount;			
 		switch(currState) {
 		case WAIT_WAVE:
+			
 			if(tickCount >= delayWave) {
 				if(troopIt.hasNext()) {
 					//currentEnemy = troopIt.next();
@@ -145,6 +148,7 @@ public class Wave implements Serializable{
 	}
 	
 	
+	//returns the current enemy to be deployed and lowers the newEnemy flag
 	public Enemy deployEnemy() {
 		Enemy temp = currentEnemy;
 		newEnemy = false;

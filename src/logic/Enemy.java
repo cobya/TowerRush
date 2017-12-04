@@ -36,6 +36,7 @@ public class Enemy implements Serializable {
 		atEnd = false;
 	}
 	
+	//automatically builds enemy according to class
 	public Enemy(EnemyClass eClass) throws IOException {
 		this();
 		this.eClass = eClass;
@@ -55,6 +56,11 @@ public class Enemy implements Serializable {
 			sprite = new EnemySprite(this);	
 			break;
 		case HEALTH:
+			maxHealth = 50;
+			attackDamage = 10;
+			travelSpeed = 5;
+			cost = 100;
+			sprite = new EnemySprite(this);	
 			break;
 		}
 		
@@ -64,6 +70,7 @@ public class Enemy implements Serializable {
 		
 	}
 
+	//getters and setters
 	public int getTravelSpeed() {
 		return travelSpeed;
 	}
@@ -142,10 +149,12 @@ public class Enemy implements Serializable {
 	}
 
 
+	//immediately attacks player (used when at end of path)
 	public void attack(Player player) {
 		player.takeDamage(attackDamage);
 	}
 	
+	//takes damage when attacked by fighter. Determines whether enemy is alive or not
 	public void takeDamage(int dmg) {
 		health -= dmg;
 		if(health <= 0) {
@@ -155,10 +164,12 @@ public class Enemy implements Serializable {
 		}
 	}
 	
+	//moves enemy to next position in path array. Simply adds enemy's speed to current index of array. Detects when at end
 	public void moveForward() {
 		Point newPos;
 		step += travelSpeed;
 		
+		//find new point on path. returns null if overshot the ending
 		newPos = path.findPos((int)step);
 		
 		//if position == null, it has reached the end of the path
@@ -167,6 +178,8 @@ public class Enemy implements Serializable {
 			newPos = path.findPos((int)step);
 			atEnd = true;
 		}
+		
+		//set the direction - our maps don't have any diagonal paths
 		
 		if(newPos.x - position.x > 1) {
 			sprite.setDirection(EnemySprite.Direction.RIGHT);
@@ -184,6 +197,7 @@ public class Enemy implements Serializable {
 		
 		position = newPos;
 		
+		//go to next state in sprite cycle every 50 steps (arbitrary)
 		if(stepCounter >= 50) {
 			stepCounter = 0;
 			sprite.toggleStep();
@@ -192,6 +206,7 @@ public class Enemy implements Serializable {
 			stepCounter += travelSpeed;
 		}
 		
+		//move sprite image
 		sprite.updatePositionDimension();
 		
 	}

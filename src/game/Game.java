@@ -6,6 +6,8 @@ import java.util.*;
 import logic.*;
 import logic.Map;
 
+
+/*Game: Controls the loop and logic for the game*/
 public class Game implements Runnable{
 	public enum Difficulty {BEGINNER, INTERMEDIATE, ADVANCED};
 	private Difficulty difficulty;
@@ -20,7 +22,7 @@ public class Game implements Runnable{
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Fighter> fighters;
 	private boolean gameOver;
-	private BufferedImage screen;
+	private BufferedImage screen;		//Is the screen of the game minu the overlay 
 	
 	
 	
@@ -110,8 +112,7 @@ public class Game implements Runnable{
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
-	
-	
+
 
 	public BufferedImage getScreen() {
 		return screen;
@@ -121,6 +122,7 @@ public class Game implements Runnable{
 		this.screen = screen;
 	}
 
+	//called when game begins
 	public void init(){
 		if(map == null || player == null) {
 			System.out.println("map or player not set");
@@ -136,11 +138,14 @@ public class Game implements Runnable{
 		
 		screen = new BufferedImage(map.getBackground().getWidth(), map.getBackground().getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
+		//start current wave
 		currWave.init();
 	}
 	
+	//acts as a turn of the game; each aspect gets updated in sequence
 	public void tick() {
 		
+		//tick current wave (manages enemy deploy times)
 		currWave.tick();
 		if(currWave.isNewEnemy()) {
 			enemies.add(currWave.deployEnemy());
@@ -152,12 +157,14 @@ public class Game implements Runnable{
 			}
 		}
 		
+		//move each enemy forward
 		for(Enemy temp: enemies) {
 			if(!temp.isAtEnd()) {
 				temp.moveForward();
 			}
 		}
 		
+		//for each fighter, detect enemies and attack them
 		for(Fighter tempF: fighters) {
 			Enemy target = tempF.detectEnemy(enemies);
 			if(target != null && tempF.isAttackReady()) {
@@ -165,12 +172,14 @@ public class Game implements Runnable{
 				if(!target.isAlive()) {
 					//Enemy is dead
 					player.gainMoney(target.getCost());
+					player.addScore(target.getCost());
 					enemies.remove(target);
 				}
 			}
 
 		}
 		
+		//remove enemies at end of path
 		ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
 		for(Enemy tempE: enemies) {
 			tempEnemies.add(tempE);
@@ -225,6 +234,8 @@ public class Game implements Runnable{
 		}
 	}
 	
+	
+	//manages game time
 	public void run() {
 		double currTime;
 		double prevTime;
@@ -238,20 +249,24 @@ public class Game implements Runnable{
 		currTime = System.nanoTime();
 		
 		while(!isGameOver()) {
+			//calculate how many ticks are due since the last time we ticked
 			prevTime = currTime;
 			currTime = System.nanoTime();
 			double timeDiff = currTime - prevTime;
 			unprocessedTicks += ((currTime - prevTime) / (1000000*msPerTick));
 			
 
-			
+			//only render if the game has ticked
 			if(unprocessedTicks >= 1) {
 				shouldRender = true;
 			}
+			
+			//tick
 			for(int i = 1; i <= unprocessedTicks; ++i) {
 				tick();
 				unprocessedTicks--;
 			}
+			
 			
 			if(shouldRender) {
 				render();
@@ -262,20 +277,25 @@ public class Game implements Runnable{
 			
 		}
 		
+		//hands off to gameScreen, which directs gameGUI to end game screen
 		gameScreen.handleEndGame(player);
 		
 	}
 
+	//writes all individual sprites to a single bufferedimage which will be drawn onto gameScreen
 	private void render() {
 		Graphics g = screen.getGraphics();
 		
+		//draw backGround
 		g.drawImage(map.getBackground(), 0, 0, null);
+		//draw each enemy sprite at that sprite's position
+		//draw the enemy's health over its head
 		for(Enemy enemy : enemies) {
 			g.drawString(enemy.getHealth() + "/" + enemy.getMaxHealth(), (int) enemy.getSprite().getPosition().getX(), (int) enemy.getSprite().getPosition().getY() - 5);
 			g.drawImage(enemy.getSprite().getCurrImage(), (int) enemy.getSprite().getPosition().getX(), (int) enemy.getSprite().getPosition().getY(), null);
 		}
-		for(Fighter fighter : fighters) {
-			
+		//draw each fighter sprite
+		for(Fighter fighter : fighters) {	
 			g.drawImage(fighter.getSprite().getCurrImage(), (int) fighter.getSprite().getPosition().getX(), (int) fighter.getSprite().getPosition().getY(), null);
 		}
 		

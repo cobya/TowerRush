@@ -34,6 +34,7 @@ public class Fighter implements Serializable{
 		
 	}
 	
+	//builds fighter according to class
 	public Fighter(FighterClass fClass) {
 		this.fClass = fClass;
 		switch(fClass) {
@@ -89,6 +90,8 @@ public class Fighter implements Serializable{
 	public Point getPosition() {
 		return position;
 	}
+	
+	//set position AND update its sprite
 	public void setPosition(Point position) {
 		this.position = position;
 		sprite.updatePositionDimension();
@@ -123,6 +126,7 @@ public class Fighter implements Serializable{
 		this.sprite = sprite;
 	}	
 	
+	//mutually set slot
 	public void setSlot(Slot slot) {
 		this.position = (Point) slot.getPos().clone();
 		this.slot = slot;
@@ -133,6 +137,7 @@ public class Fighter implements Serializable{
 		sprite.updatePositionDimension();
 	}
 	
+	//re
 	public boolean isAttackReady() {
 		if(System.currentTimeMillis() - lastAttackTime > cooldownTime ) {
 			attackReady = true;

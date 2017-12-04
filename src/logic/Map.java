@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 
 import logic.Enemy.EnemyClass;
 
-
+//Contains information on waves, fighters, slots, and paths
 public class Map implements Serializable {
 	private ArrayList<Path> paths;
 	private Point towerPos;

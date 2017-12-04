@@ -15,6 +15,7 @@ import java.io.Serializable;
 import javax.imageio.ImageIO;
 import javax.swing.text.Position;
 
+//contains multiple images for each state of the enemy's animation
 public class EnemySprite implements Serializable{
 	public static enum Direction{
 		FRONT, BACK, RIGHT, LEFT
@@ -27,9 +28,9 @@ public class EnemySprite implements Serializable{
 	private Dimension dimension;
 	
 	
-	BufferedImage spriteSheet;
+	BufferedImage spriteSheet;	//single spritesheet for all sprites
 	BufferedImage currImage;//is a copy of the reference image so it can be drawn on
-	BufferedImage currImageRef;
+	BufferedImage currImageRef;	//refers to which image is being used; must not be drawn on
 	BufferedImage front1;
 	BufferedImage front2;
 	BufferedImage back1;
@@ -49,6 +50,7 @@ public class EnemySprite implements Serializable{
 		this.enemy = enemy;
 		
 		
+		//crop sprites depending on which class the enemy is
 		try {
 			spriteSheet = ImageIO.read(new File("images/spritesheet.png"));
 			
@@ -56,7 +58,7 @@ public class EnemySprite implements Serializable{
 			
 			
 			switch(eClass) {
-				case STRENGTH:			
+				case STRENGTH:			//crops the demon looking monster	
 					front1 = spriteSheet.getSubimage(0, 149, 23, 55);
 					front2 = spriteSheet.getSubimage(25, 149, 23, 55);
 					back1 = spriteSheet.getSubimage(50, 149, 23, 55);
@@ -70,7 +72,7 @@ public class EnemySprite implements Serializable{
 					left3 = spriteSheet.getSubimage(169, 149, 13, 55);
 					left4 = spriteSheet.getSubimage(157, 149, 10, 55);
 					break;
-				case SPEED:
+				case SPEED:				//crops the goblin looking monster
 					front1 = spriteSheet.getSubimage(0, 80, 25, 58);
 					front2 = spriteSheet.getSubimage(27, 80, 25, 58);
 					back1 = spriteSheet.getSubimage(54, 80, 25, 58);
@@ -84,7 +86,7 @@ public class EnemySprite implements Serializable{
 					left3 = spriteSheet.getSubimage(189, 80, 15, 58);
 					left4 = spriteSheet.getSubimage(174, 80, 13, 58);
 					break;
-				case HEALTH:
+				case HEALTH:			//crops the golem looking monster
 					front1 = spriteSheet.getSubimage(0, 0, 37, 70);
 					front2 = spriteSheet.getSubimage(40, 0, 37, 70);
 					back1 = spriteSheet.getSubimage(80, 0, 40, 70);
@@ -104,10 +106,12 @@ public class EnemySprite implements Serializable{
 			
 			currImageRef = front1;
 			
+			//draw reference image to current image
 			currImage = new BufferedImage(currImageRef.getWidth(), currImageRef.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = currImage.getGraphics();
 			g.drawImage(currImageRef, 0, 0, null);
 			
+			//start with front facing image
 			direction = Direction.FRONT;
 			updatePositionDimension();
 		
@@ -117,6 +121,7 @@ public class EnemySprite implements Serializable{
 		
 	}
 	
+	//getteres and setters
 	public Point getPosition() {
 		return position;
 	}
@@ -133,7 +138,8 @@ public class EnemySprite implements Serializable{
 		this.currImage = currImage;
 	}
 	
-	//getteres and setters
+	
+	//sets direction and if the direction is new, changes the reference image, starting a new cycle
 	public void setDirection(Direction direction) {
 		if(this.direction == direction) {
 			return;
@@ -166,6 +172,7 @@ public class EnemySprite implements Serializable{
 		return direction;
 	}
 	
+	//continues sprite through animation cycle for a given direction
 	public void toggleStep() {
 		switch(direction) {
 		case FRONT:
@@ -222,6 +229,7 @@ public class EnemySprite implements Serializable{
 		updatePositionDimension();
 	}
 	
+	//updates sprite image position and dimension. The image is positioned so that the enemy position is in the middle of it
 	public void updatePositionDimension() {
 		
 		//update dimension

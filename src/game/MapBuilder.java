@@ -58,7 +58,7 @@ public class MapBuilder {
 			//wave2.setDelayWave(50);
 			//wave3.setDelayWave(50);
 			
-			wave1.setDelayEnemy(1);
+			wave1.setDelayEnemy(30);
 			//wave2.setDelayEnemy(100);
 			//wave3.setDelayEnemy(100);
 			
@@ -66,18 +66,19 @@ public class MapBuilder {
 			//ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
 			//ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
 			for(int i = 0; i < 1; ++i) {
+				
 				Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
 				enemy1.setPath(path);
 				Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
 				enemy2.setPath(path);
-				Enemy enemy3 = new Enemy(Enemy.EnemyClass.STRENGTH);
+				Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
 				enemy3.setPath(path);
 				
 				
 				
 				enemyWave1.add(enemy1);
-				//enemyWave2.add(enemy2);
-				//enemyWave3.add(enemy3);
+				enemyWave1.add(enemy2);
+				enemyWave1.add(enemy3);
 			}
 			
 			wave1.setTroopType(enemyWave1);

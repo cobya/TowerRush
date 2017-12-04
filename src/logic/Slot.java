@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.io.Serializable;
 
+//Is the space where a fighter can be placed. NOTE: the position of the slot is the lower left corner of what is shown
 public class Slot implements Serializable{
 	private Point pos;
 	private Fighter fighter;
@@ -11,7 +12,7 @@ public class Slot implements Serializable{
 	
 	public Slot() {
 		pos = new Point();
-		dimension = new Dimension(74, 47);
+		dimension = new Dimension(74, 47);		//arbitrary
 	}
 	
 	public Slot(Point pos) {
@@ -36,6 +37,8 @@ public class Slot implements Serializable{
 	public Fighter getFighter() {
 		return fighter;
 	}
+	
+	//fighter and slot are always mutually set
 	public void setFighter(Fighter fighter) {
 		this.fighter = fighter;
 		if(!this.equals(fighter.getSlot())) {

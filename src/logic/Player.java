@@ -92,4 +92,7 @@ public class Player implements Serializable{
 		this.money -= money;
 	}
 	
+	public void addScore(int score) {
+		this.score += score;
+	}
 }
