@@ -162,6 +162,7 @@ public class Fighter implements Serializable{
 		lastAttackTime = System.currentTimeMillis();
 	}
 	
+	//could be improved to detect enemy closest to end; doesn't get farthest enemy with multiple paths of varying lengths
 	public Enemy detectEnemy(ArrayList<Enemy> enemies){
 		Enemy temp = null;
 		double maxStep = 0;

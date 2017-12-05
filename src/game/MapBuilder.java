@@ -154,27 +154,26 @@ public class MapBuilder {
 				
 				map.addPath(path);
 				
-				//create and balance waves still to do
 				
 				Wave wave1 = new Wave();
-				//Wave wave2 = new Wave();
-				//Wave wave3 = new Wave();
+				Wave wave2 = new Wave();
+				Wave wave3 = new Wave();
 				
 				wave1.setWaveNumber(1);
-				//wave2.setWaveNumber(2);
-				//wave3.setWaveNumber(3);
+				wave2.setWaveNumber(2);
+				wave3.setWaveNumber(3);
 				
-				wave1.setDelayWave(1);
-				//wave2.setDelayWave(50);
-				//wave3.setDelayWave(50);
+				wave1.setDelayWave(100);
+				wave2.setDelayWave(10);
+				wave3.setDelayWave(10);
 				
 				wave1.setDelayEnemy(30);
-				//wave2.setDelayEnemy(100);
-				//wave3.setDelayEnemy(100);
+				wave2.setDelayEnemy(50);
+				wave3.setDelayEnemy(50);
 				
 				ArrayList<Enemy> enemyWave1 = new ArrayList<Enemy>();
-				//ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
-				//ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
+				ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
+				ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
 				for(int i = 0; i < 10; ++i) {
 					
 					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
@@ -184,21 +183,47 @@ public class MapBuilder {
 					Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
 					enemy3.setPath(path);
 					
-					
-					
 					enemyWave1.add(enemy1);
 					enemyWave1.add(enemy2);
 					enemyWave1.add(enemy3);
 				}
 				
+				for(int i = 0; i < 10; ++i) {
+					
+					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
+					enemy1.setPath(path);
+					Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
+					enemy2.setPath(path);
+					Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
+					enemy3.setPath(path);
+					
+					enemyWave2.add(enemy1);
+					enemyWave2.add(enemy2);
+					enemyWave2.add(enemy3);
+				}
+				
+				for(int i = 0; i < 10; ++i) {
+					
+					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
+					enemy1.setPath(path);
+					Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
+					enemy2.setPath(path);
+					Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
+					enemy3.setPath(path);
+					
+					enemyWave3.add(enemy1);
+					enemyWave3.add(enemy2);
+					enemyWave3.add(enemy3);
+				}
+				
 				wave1.setTroopType(enemyWave1);
-				//wave2.setTroopType(enemyWave2);
-				//wave3.setTroopType(enemyWave3);
+				wave2.setTroopType(enemyWave2);
+				wave3.setTroopType(enemyWave3);
 				
 				ArrayList<Wave> waves = new ArrayList<Wave>();
 				waves.add(wave1);
-				//waves.add(wave2);
-				//waves.add(wave3);
+				waves.add(wave2);
+				waves.add(wave3);
 				
 				//NOTE: slot point is the lower left corner of what is drawn (inside the border)
 				Slot slot1 = new Slot();
@@ -267,24 +292,24 @@ public class MapBuilder {
 				//create and balance waves still to do
 				
 				Wave wave1 = new Wave();
-				//Wave wave2 = new Wave();
-				//Wave wave3 = new Wave();
+				Wave wave2 = new Wave();
+				Wave wave3 = new Wave();
 				
 				wave1.setWaveNumber(1);
-				//wave2.setWaveNumber(2);
-				//wave3.setWaveNumber(3);
+				wave2.setWaveNumber(2);
+				wave3.setWaveNumber(3);
 				
-				wave1.setDelayWave(1);
-				//wave2.setDelayWave(50);
-				//wave3.setDelayWave(50);
+				wave1.setDelayWave(50);
+				wave2.setDelayWave(10);
+				wave3.setDelayWave(10);
 				
 				wave1.setDelayEnemy(30);
-				//wave2.setDelayEnemy(100);
-				//wave3.setDelayEnemy(100);
+				wave2.setDelayEnemy(15);
+				wave3.setDelayEnemy(5);
 				
 				ArrayList<Enemy> enemyWave1 = new ArrayList<Enemy>();
-				//ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
-				//ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
+				ArrayList<Enemy> enemyWave2 = new ArrayList<Enemy>();
+				ArrayList<Enemy> enemyWave3 = new ArrayList<Enemy>();
 				for(int i = 0; i < 10; ++i) {
 					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
 					Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
@@ -314,14 +339,72 @@ public class MapBuilder {
 					enemyWave1.add(enemy3);
 				}
 				
+				for(int i = 0; i < 15; ++i) {
+					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
+					Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
+					Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
+
+					// Choosing a random path from the available 3
+					Random rand = new Random();
+					int randomPath = rand.nextInt(3) + 1;
+
+					if(randomPath == 1) {
+						enemy1.setPath(path);
+						enemy2.setPath(path);
+						enemy3.setPath(path);
+					} else if(randomPath == 2) {
+						enemy1.setPath(path2);
+						enemy2.setPath(path2);
+						enemy3.setPath(path2);
+					} else {
+						enemy1.setPath(path3);
+						enemy2.setPath(path3);
+						enemy3.setPath(path3);						
+					}
+
+
+					enemyWave2.add(enemy1);
+					enemyWave2.add(enemy2);
+					enemyWave2.add(enemy3);
+				}
+				
+				for(int i = 0; i < 20; ++i) {
+					Enemy enemy1 = new Enemy(Enemy.EnemyClass.STRENGTH);
+					Enemy enemy2 = new Enemy(Enemy.EnemyClass.SPEED);
+					Enemy enemy3 = new Enemy(Enemy.EnemyClass.HEALTH);
+
+					// Choosing a random path from the available 3
+					Random rand = new Random();
+					int randomPath = rand.nextInt(3) + 1;
+
+					if(randomPath == 1) {
+						enemy1.setPath(path);
+						enemy2.setPath(path);
+						enemy3.setPath(path);
+					} else if(randomPath == 2) {
+						enemy1.setPath(path2);
+						enemy2.setPath(path2);
+						enemy3.setPath(path2);
+					} else {
+						enemy1.setPath(path3);
+						enemy2.setPath(path3);
+						enemy3.setPath(path3);						
+					}
+
+
+					enemyWave3.add(enemy1);
+					enemyWave3.add(enemy2);
+					enemyWave3.add(enemy3);
+				}
+				
 				wave1.setTroopType(enemyWave1);
-				//wave2.setTroopType(enemyWave2);
-				//wave3.setTroopType(enemyWave3);
+				wave2.setTroopType(enemyWave2);
+				wave3.setTroopType(enemyWave3);
 				
 				ArrayList<Wave> waves = new ArrayList<Wave>();
 				waves.add(wave1);
-				//waves.add(wave2);
-				//waves.add(wave3);
+				waves.add(wave2);
+				waves.add(wave3);
 				
 				//NOTE: slot point is the lower left corner of what is drawn (inside the border)
 				Slot slot1 = new Slot();
