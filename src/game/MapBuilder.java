@@ -253,7 +253,7 @@ public class MapBuilder {
 
 				// top right to end
 				for(int i = 0; i < 320; ++i) {
-					subPath2.add(new Point(1126, i));
+					subPath3.add(new Point(1126, i));
 				}
 				for(int i = 1126; i < 1300; i++) {
 					subPath3.add(new Point(i, 320));
