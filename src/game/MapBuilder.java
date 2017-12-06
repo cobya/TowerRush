@@ -231,7 +231,7 @@ public class MapBuilder {
 				Slot slot3 = new Slot();
 				Slot slot4 = new Slot();
 				Slot slot5 = new Slot();
-				slot1.setPos(new Point(40, 523));
+				slot1.setPos(new Point(40, 253));
 				slot2.setPos(new Point(380, 604));
 				slot3.setPos(new Point(612, 102));
 				slot4.setPos(new Point(1168, 103));
